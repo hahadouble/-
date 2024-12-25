@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工程模式密码生成器</title>
+    <link rel="stylesheet" href="water.min.css" async />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-size: 18px; /* Default font size for better readability */
+        }
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 400px; /* Limit the width for better readability */
+            padding: 20px;
+        }
+        input, button {
+            width: 100%;
+            font-size: 18px;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        @media only screen and (max-width: 600px) {
+            body {
+                font-size: 20px; /* Increase font size for smaller screens */
+            }
+            input, button {
+                font-size: 20px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="date" id="date" style="text-align: center;">
+        <br><br>
+        <button id="calculateKey">获取密码</button>
+        <br><br>
+        <input type="text" id="keyResult" readonly style="text-align: center;">
+    </div>
+    <script>
+        var today = new Date();
+        var currentDate = today.toISOString().split('T')[0];
+        document.getElementById('date').value = currentDate;
+
+        const constants = [213518, 658035, 235657, 567534, 647825, 234700, 127347, 648924, 733782, 553456];
+
+        function calculateKey(cellValue) {
+            const lastNumber = cellValue % 10;
+            const key = Math.abs(cellValue + constants[lastNumber]);
+            const keyStr = key.toString().slice(-6);
+            return keyStr;
+        }
+
+        function convertDateToInt(dateStr) {
+            const [year, month, day] = dateStr.split('-');
+            return parseInt(year.slice(2) + month + day, 10);
+        }
+
+        document.getElementById('calculateKey').addEventListener('click', function() {
+            const date = document.getElementById('date').value;
+            const keyResult = document.getElementById('keyResult');
+            let cellValue;
+
+            if (date) {
+                cellValue = convertDateToInt(date);
+                if (isNaN(cellValue)) {
+                    alert("Invalid input. Please provide a date in the format YYYY-MM-DD.");
+                    return;
+                }
+            } else {
+                alert("No input provided. Using default value.");
+                cellValue = 240813;
+            }
+
+            const keyStr = calculateKey(cellValue);
+            keyResult.value = keyStr;
+        });
+
+        document.getElementById('calculateKey').click();
+    </script>
+</body>
+</html>
